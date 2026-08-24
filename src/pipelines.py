@@ -2,7 +2,12 @@ from src.spark import get_spark_session
 from src.logger import get_logger
 from src.bronze import ingest_bronze
 from src.silver import transform_silver, write_silver
-from src.gold import create_channel_performance, write_channel_performance
+from src.gold import (
+    create_channel_performance, 
+    write_channel_performance,
+    create_category_performance,      
+    write_category_performance        
+)
 from src.timing import timer
 from datetime import datetime, timezone
 import sys
@@ -27,6 +32,7 @@ def main():
         bronze_path = BRONZE_DATA_DIR / "youtube_channels"
         silver_path = SILVER_DATA_DIR / "youtube_channels"
         channel_perf_path = GOLD_DATA_DIR / "channel_performance" 
+        category_perf_path = GOLD_DATA_DIR / "category_performance" # Added path
         
         try:
             with timer(name="Bronze ingestion", logger=logger):
@@ -35,7 +41,6 @@ def main():
                 df_bronze = ingest_bronze(spark, source_path=str(source_path), output_path=str(bronze_path))
                 
                 logger.info(f"Bronze record count: {df_bronze.count()}")
-                logger.info("Finished: Bronze Ingestion")
         except Exception as e:
             logger.error(f"Failed: Bronze Ingestion - {e}")
             sys.exit(1)
@@ -48,7 +53,6 @@ def main():
                 write_silver(df_silver, str(silver_path))
                 
                 logger.info(f"Silver record count: {df_silver.count()}")
-                logger.info("Finished: Silver Transformation")
         except Exception as e:
             logger.error(f"Failed: Silver Transformation - {e}")
             sys.exit(1)
@@ -56,12 +60,17 @@ def main():
         try:   
             with timer("Gold Analytics", logger):
                 logger.info("Starting: Gold Analytics")
+                
+                # 1. Channel Performance
                 df_channel_perf = create_channel_performance(df_silver)
-                
                 write_channel_performance(df_channel_perf, str(channel_perf_path))
+                logger.info(f"Gold channel record count: {df_channel_perf.count()}")
                 
-                logger.info(f"Gold record count: {df_channel_perf.count()}")
-                logger.info("Finished: Gold Analytics")        
+                # 2. Category Performance (Newly Added)
+                df_category_perf = create_category_performance(df_silver)
+                write_category_performance(df_category_perf, str(category_perf_path))
+                logger.info(f"Gold category record count: {df_category_perf.count()}")
+                       
         except Exception as e:
             logger.error(f"Failed: Gold Analytics - {e}")
             sys.exit(1)
@@ -74,11 +83,20 @@ def main():
                 "bronze_rows": df_bronze.count(),
                 "silver_rows": df_silver.count(),
                 "gold_channel_rows": df_channel_perf.count(),
+                "gold_category_rows": df_category_perf.count(), # Added tracking metric
             }]
             
             audit_df = spark.createDataFrame(
                 audit_data,
-                schema=["run_id", "pipeline_name", "status", "bronze_rows", "silver_rows", "gold_channel_rows"]
+                schema=[
+                    "run_id", 
+                    "pipeline_name", 
+                    "status", 
+                    "bronze_rows", 
+                    "silver_rows", 
+                    "gold_channel_rows", 
+                    "gold_category_rows" # Updated schema
+                ]
             )
             audit_path = AUDIT_DATA_DIR / "pipeline_runs"
             
