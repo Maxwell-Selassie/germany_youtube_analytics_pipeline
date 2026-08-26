@@ -1,5 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
+from src.spark import get_spark_session
+from configs.config import BRONZE_DATA_DIR, SILVER_DATA_DIR
 
 def transform_silver(df: DataFrame) -> DataFrame:
     # 1. Clean, rename, trim, and cast columns in a single projection pass
@@ -35,3 +37,15 @@ def transform_silver(df: DataFrame) -> DataFrame:
 
 def write_silver(df: DataFrame, output_path: str) -> None:
     df.write.mode("overwrite").parquet(output_path)
+
+
+def run_silver(): 
+    spark = get_spark_session()
+    bronze_path = BRONZE_DATA_DIR / "youtube_channels"
+    silver_path = SILVER_DATA_DIR / "youtube_channels"
+    
+    bronze_df = spark.read.parquet(bronze_path)
+    
+    silver_df = transform_silver(bronze_df)
+    
+    write_silver(silver_df, silver_path)
