@@ -68,7 +68,7 @@ Instead, the architecture focuses on:
 # DATA ARCHITECTURE
 ---
 
-![data_architecture](docs/architecture.drawio.svg)
+![data_architecture](docs/architecture.svg)
 
 # 3. Architectural Decision Process
 
