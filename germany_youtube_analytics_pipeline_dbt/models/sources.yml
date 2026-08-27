@@ -1,0 +1,39 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw YouTube channel data loaded from the PySpark silver layer into DuckDB."
+
+    schema: raw
+
+    tables:
+      - name: youtube_channels
+        description: "Silver-layer YouTube channel dataset containing the cleaned and enriched German YouTube channel records."
+
+        columns:
+          - name: youtuber
+            description: "Name of the YouTube channel."
+
+          - name: category
+            description: "Content category assigned to the YouTube channel."
+
+          - name: subscribers
+            description: "Number of subscribers for the channel."
+
+          - name: video_views
+            description: "Total number of views accumulated by the channel."
+
+          - name: video_count
+            description: "Total number of videos published by the channel."
+
+          - name: rank
+            description: "Original ranking of the channel in the source dataset."
+
+          - name: started
+            description: "Year the YouTube channel was started."
+
+          - name: views_per_subscriber
+            description: "Ratio of total video views to subscriber count."
+
+          - name: avg_views_per_video
+            description: "Average number of views per published video."

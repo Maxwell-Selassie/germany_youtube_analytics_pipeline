@@ -1,0 +1,111 @@
+version: 2
+
+models:
+
+  - name: channel_performance
+    description: >
+      Channel-level analytics model used to compare YouTube channels
+      based on subscribers, views, content volume, and performance metrics.
+
+    columns:
+      - name: youtuber
+        description: "YouTube channel name."
+        tests:
+          - not_null
+
+      - name: category
+        description: "Content category of the channel."
+
+      - name: subscribers
+        description: "Total number of subscribers."
+
+      - name: video_views
+        description: "Total accumulated video views."
+
+      - name: video_count
+        description: "Total number of videos published."
+
+      - name: subscriber_rank
+        description: "Channel ranking based on subscriber count."
+
+      - name: views_rank
+        description: "Channel ranking based on total video views."
+
+      - name: content_volume_rank
+        description: "Channel ranking based on number of videos."
+
+
+  - name: category_performance
+    description: >
+      Category-level aggregation showing content volume,
+      subscriber volume, and viewing performance across YouTube categories.
+
+    columns:
+      - name: category
+        description: "YouTube content category."
+        tests:
+          - not_null
+          - unique
+
+      - name: total_channels
+        description: "Total number of channels in the category."
+
+      - name: total_video_count
+        description: "Total number of videos across channels in the category."
+
+      - name: total_subscribers
+        description: "Total subscribers across channels in the category."
+
+      - name: total_video_views
+        description: "Total video views across channels in the category."
+
+      - name: avg_subscribers
+        description: "Average subscribers per channel."
+
+      - name: avg_video_count
+        description: "Average number of videos per channel."
+
+      - name: avg_video_views
+        description: "Average video views per channel."
+
+      - name: avg_views_per_video
+        description: "Average views generated per video."
+
+      - name: avg_views_per_subscriber
+        description: "Average views generated per subscriber."
+
+
+  - name: relationship_analysis
+    description: >
+      Analytical model designed to support investigation of relationships
+      between subscribers, video views, content volume, and viewing efficiency.
+
+    columns:
+      - name: youtuber
+        description: "YouTube channel name."
+        tests:
+          - not_null
+
+      - name: subscribers
+        description: "Number of subscribers."
+
+      - name: video_views
+        description: "Total video views."
+
+      - name: video_count
+        description: "Number of videos published."
+
+      - name: avg_views_per_video
+        description: "Average views per video."
+
+      - name: views_per_subscriber
+        description: "Views generated per subscriber."
+
+      - name: log_subscribers
+        description: "Natural logarithm transformation of subscriber count."
+
+      - name: log_video_views
+        description: "Natural logarithm transformation of total video views."
+
+      - name: log_video_count
+        description: "Natural logarithm transformation of video count."

@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_youtube_channels
+    description: >
+      Staging model containing the cleaned YouTube channel data.
+      This model provides the standardized dataset used by downstream
+      analytics models.
+
+    columns:
+      - name: youtuber
+        description: "YouTube channel name."
+        tests:
+          - not_null
+
+      - name: category
+        description: "YouTube content category."
+        tests:
+          - not_null
+
+      - name: subscribers
+        description: "Number of subscribers."
+
+      - name: video_views
+        description: "Total video views."
+
+      - name: video_count
+        description: "Number of videos published."
+
+      - name: rank
+        description: "Channel ranking from the source dataset."
+
+      - name: started
+        description: "Year the channel was started."
+
+      - name: views_per_subscriber
+        description: "Total views divided by subscribers."
+
+      - name: avg_views_per_video
+        description: "Total views divided by video count."
