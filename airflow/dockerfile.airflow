@@ -2,13 +2,19 @@ FROM apache/airflow:3.3.1
 
 USER root
 
+# Java runtime required by PySpark
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-17-jre-headless && apt-get clean && rm -rf /var/lib/apt/lists/*
+    openjdk-17-jre-headless \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 USER airflow
 
+# Python dependencies required by the pipeline
 RUN pip install --no-cache-dir \
     pyspark \
     pandas \
     matplotlib \
-    seaborn 
+    seaborn \
+    duckdb \
+    dbt-duckdb
